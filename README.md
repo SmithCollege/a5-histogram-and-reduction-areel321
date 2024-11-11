@@ -36,10 +36,10 @@ You only need to compare within an algorithms (1 v 2 v 3) and not across.
 
 # Submission Checklist
 
-[ ] Code (1-6)
-[ ] Performance (table, graph)
-[ ] Reflection
-[ ] Peer feedback
+- [ ] Code (1-6)
+- [ ] Performance (table, graph)
+- [ ] Reflection
+- [ ] Peer feedback
 
 # Debugging
 

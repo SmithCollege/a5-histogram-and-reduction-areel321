@@ -64,7 +64,7 @@ int main() {
 	double *times = malloc(sizeof(double) * SIZE);
 
 	for (int i=0;i<SIZE;i++) {
-		arr[i] = rand() % 101;
+		arr[i] = rand() % 16;
 		printf("%d ", arr[i]);
 	}
 
@@ -84,7 +84,8 @@ int main() {
 	printf("min: %d\n", minimum(arr));
 	printf("max: %d\n", maximum(arr));
 
-    
+    free(arr);
+    free(times);
 	return 0;
 }
 

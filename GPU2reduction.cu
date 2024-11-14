@@ -3,8 +3,7 @@
 #include <iostream>
 #include <sys/time.h>
 
-#define SIZE 8
-#define BLOCK_SIZE 32
+#define SIZE 2000
 
 double get_clock() {
         struct timeval tv; int ok;
@@ -17,7 +16,7 @@ double get_clock() {
 
 __global__ void sum(int* input, int* out) {
 
-	__shared__ float partialSum[2*BLOCK_SIZE];
+	__shared__ float partialSum[2*SIZE];
 	unsigned int t = threadIdx.x;
 	unsigned int start = 2*blockIdx.x*blockDim.x;
 	partialSum[t] = input[start + t];
@@ -67,8 +66,11 @@ int main(){
 	(t1-t0)/SIZE));
 
 	cudaMemcpy(d_input, input, sizeof(int)*SIZE, cudaMemcpyHostToDevice);
-
-	sum<<<1, BLOCK_SIZE>>>(d_input, d_out);
+	dim3 block(32);
+    dim3 grid((SIZE + block.x - 1)/block.x);
+    double start = get_clock();
+	sum<<<grid, block>>>(d_input, d_out);
+	double end = get_clock();
 
 	cudaDeviceSynchronize();
 
@@ -83,6 +85,8 @@ int main(){
 	printf("\n");
 
 	printf("%d\n", out[0]);
+
+	printf("total time: %f\n", end-start);
 	
 
 	free(input);

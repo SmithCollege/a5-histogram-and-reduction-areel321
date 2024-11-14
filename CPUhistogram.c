@@ -2,35 +2,34 @@
 #include <stdio.h>
 #include <sys/time.h>
 
-#define size 100
-
-double get_clock() {
-        struct timeval tv; int ok;
-        ok = gettimeofday(&tv, (void *) 0);
-        if (ok<0){
-                printf("gettimeofday error\n");
-        }
-        return (tv.tv_sec*1.0+tv.tv_usec*1.0E-6);
-}
+#define size 10
+#define buckets 5
 
 
-void histo(){
-}
 
 int main(){
-double *times = malloc(sizeof(double) * size);
+	int *hist = malloc(sizeof(int)*size);
+	int results[buckets] = {0};
 
 
-                //calibrate the clock
-        double t0 = get_clock();
-        for (int i=0; i<size; i++){
-                times[i] = get_clock();
-        }
-        double t1 = get_clock();
-        printf("time per call: %f nx\n", (1000000000.0 * (t1-t0\
-)/size));
-  //print clock times
-        printf("start: %f, end: %f\n", start, end);
-	free(times);
+	for (int i=0;i<size;i++){
+		hist[i] = i;
+		printf("%d ", i);
+	}
+
+	for (int i=0; i<size; i++){
+		if(hist[i]<size){
+			int bin=hist[i]%buckets;
+			results[bin]++;
+		}
+	}
+
+	printf("\n");
+	for (int i=0; i<buckets;i++){
+		printf("%d ", results[i]);
+	}
+	printf("\n");
+
+	
   return 0;
 }

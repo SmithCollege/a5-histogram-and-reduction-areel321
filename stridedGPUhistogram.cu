@@ -14,82 +14,20 @@ double get_clock() {
 }
 
 
-__global__ void histo_kernel(unsigned char* array, long size, unsigned int* histo, int buckets)
-{
-    int i = (blockIdx.x * blockDim.x + threadIdx.x);
-
-    if (i>=size){
-		return;
-		}
-    unsigned char value = array[i];
-
-    int bin = (value % buckets);
-    printf("%d", bin);
-
-    atomicAdd(&histo[bin],1);
-    
-}
-
 int main(){
-int size = 8;
-	double *times = (double *)malloc(sizeof(double)*size);
-         //calibrate clock
+double *times = (double *)malloc(sizeof(double)*width);
+	 //calibrate clock
         double t0 = get_clock();
-        for (int i=0; i<size; i++){
+        for (int i=0; i<width; i++){
             times[i] = get_clock();
         }
         double t1 = get_clock();
-        printf("time per call: %f nx\n", 
-        (1000000000.0 * (t1-t0)/size));
-	
+        printf("time per call: %f nx\n", (1000000000.0 * (t1-t0\
+)/width));
 
-	unsigned char* array = (unsigned char*)malloc(sizeof(char)*size);
-	unsigned int* histo = 
-	(unsigned int*)malloc(sizeof(int)*size);
+//print clock times
+        printf("start: %f, end: %f\n", start_time, end_time);
 
-	for (int i=0;i<size;i++){
-		array[i]= i;
-		//printf("%d ", array[i]);
-	}
-	printf("\n");
-
-	unsigned char* dArray;
-    cudaMalloc(&dArray,size);
-    cudaMemcpy(dArray,array,size,
-    cudaMemcpyHostToDevice);
-
-    unsigned int* dHist;
-    cudaMalloc(&dHist,size * sizeof(int));
-    cudaMemset(dHist,0,size * sizeof(int));
-
-    dim3 block(32);
-    dim3 grid((size + block.x - 1)/block.x);
-
-	cudaDeviceSynchronize();
-    histo_kernel<<<grid,block>>>(dArray,size,dHist, size);
-    cudaDeviceSynchronize();
-
-    printf("%s\n", cudaGetErrorString(cudaGetLastError()));
-
-    cudaMemcpy(histo,dHist,size * sizeof(int),
-    cudaMemcpyDeviceToHost);
-
-    for (int i=0;i<size;i++){
-    	printf("%d ", histo[i]);
-    }
-    printf("\n");
-
-    cudaFree(dArray);
-    cudaFree(dHist);
-
-
-
-
-
-
-	//print clock times
-	//printf("start: %f, end: %f\n", start_time, end_time);
-
-	free(times);
-	return 0;
+free(times);
+return 0;
 }

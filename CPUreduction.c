@@ -3,7 +3,7 @@
 #include <math.h>
 #include <sys/time.h>
 
-#define SIZE 8
+#define SIZE 2000
 
 double get_clock() {
         struct timeval tv; int ok;
@@ -65,7 +65,7 @@ int main() {
 
 	for (int i=0;i<SIZE;i++) {
 		arr[i] = rand() % 16;
-		printf("%d ", arr[i]);
+	//	printf("%d ", arr[i]);
 	}
 
 	printf("\n");
@@ -79,10 +79,16 @@ int main() {
     printf("time per call: %f nx\n", (1000000000.0 * 
     (t1-t0)/SIZE));
 
+    double start = get_clock();
+
 	printf("sum: %d\n", sum(arr));
 	printf("product: %d\n", product(arr));
 	printf("min: %d\n", minimum(arr));
 	printf("max: %d\n", maximum(arr));
+
+	double end = get_clock();
+
+	printf("total time: %f\n", (end-start));
 
     free(arr);
     free(times);

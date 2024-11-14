@@ -3,18 +3,14 @@
 #include <sys/time.h>
 
 #define TILE_WIDTH 50
-
-double get_clock() {
-        struct timeval tv; int ok;
-        ok = gettimeofday(&tv, (void *) 0);
-        if (ok<0){
-                printf("gettimeofday error");
-        }
-        return (tv.tv_sec * 1.0 + tv.tv_usec * 1.0E-6);
-}
+#define size 8
+#define buckets 8
 
 
-__global__ void histo_kernel(unsigned char* array, long size, unsigned int* histo, int buckets)
+
+
+__global__ void histo_kernel(unsigned char* array, 
+unsigned int* histo)
 {
     int i = (blockIdx.x * blockDim.x + threadIdx.x);
 
@@ -31,16 +27,6 @@ __global__ void histo_kernel(unsigned char* array, long size, unsigned int* hist
 }
 
 int main(){
-int size = 8;
-	double *times = (double *)malloc(sizeof(double)*size);
-         //calibrate clock
-        double t0 = get_clock();
-        for (int i=0; i<size; i++){
-            times[i] = get_clock();
-        }
-        double t1 = get_clock();
-        printf("time per call: %f nx\n", 
-        (1000000000.0 * (t1-t0)/size));
 	
 
 	unsigned char* array = (unsigned char*)malloc(sizeof(char)*size);
@@ -66,7 +52,7 @@ int size = 8;
     dim3 grid((size + block.x - 1)/block.x);
 
 	cudaDeviceSynchronize();
-    histo_kernel<<<grid,block>>>(dArray,size,dHist, size);
+    histo_kernel<<<grid,block>>>(dArray,dHist);
     cudaDeviceSynchronize();
 
     printf("%s\n", cudaGetErrorString(cudaGetLastError()));
@@ -84,12 +70,5 @@ int size = 8;
 
 
 
-
-
-
-	//print clock times
-	//printf("start: %f, end: %f\n", start_time, end_time);
-
-	free(times);
 	return 0;
 }
